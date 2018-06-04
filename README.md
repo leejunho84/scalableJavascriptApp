@@ -5,7 +5,7 @@
 커머스 플랫폼을 개발완료와 1년 반의 운영에 대한 회고이다.
 
 ## 확장성있게 개발하기
-웹어플리케이션을 개발하기에 앞서 Nicholas Zakas JavaScript Application Architecture
+웹어플리케이션을 개발하기에 앞서 Nicholas Zakas [JavaScript Application Architecture](https://www.slideshare.net/nzakas/scalable-javascript-application-architecture)
 플랫폼을 어떻게 개발 해야할지가 중요했다. 플랫폼은 여러다양한 사람들이 
 내가 운영을 했었던 프로젝트들중 프레임워크를 사용한 프로젝트를 제외한 여러 라이브러리를 사용한 프로젝트에서는 코드의 재사용성이라는 것 자체가 불가능했다. 물론 자기가 개발한 코드들에서는 재사용을 하기 위해 짜겠지만 
 컴포넌트는 아주 작은 단위로 쪼개어 질때 가장 재사용이 가능한 상태로 
