@@ -1,0 +1,16 @@
+{
+  "name": "scalable-javascript",
+  "version": "1.0.0",
+  "description": "scalable javascript application",
+  "main": "index.js",
+  "repository": "https://leejunho84@github.com/leejunho84/scalableJavascriptApp.git",
+  "author": "Lee Junho <div51@naver.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "gulp start"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.1"
+  }
+}

@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Example document</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<style>
+
+	</style>
+</head>
+<body>
+	<div class="input-group mb-3" data-module-search="{api://api.poesis.kr/post/search.php, errMsg:주소를 입력해주세요}">
+		<input type="text" class="form-control" placeholder="예) 문래동 강서타워, 선유로 82" data-component-inputtextfield="{}">
+		<div class="input-group-append">
+			<button class="btn btn-outline-secondary" type="button">Button</button>
+		</div>
+		<div class="msg"></div>
+	</div>
+	<div class="list-group" data-module-searchlist="">
+		<li class="list-group-item disabled">no result...</li>
+		<!--/*
+		<a href="#" class="list-group-item list-group-item-action active">Cras justo odio</a>
+		<a href="#" class="list-group-item list-group-item-action">Dapibus ac facilisis in</a>
+		<a href="#" class="list-group-item list-group-item-action">Morbi leo risus</a>
+		<a href="#" class="list-group-item list-group-item-action">Porta ac consectetur ac</a>
+		<a href="#" class="list-group-item list-group-item-action disabled">Vestibulum at eros</a>
+		*/-->
+	</div>
+	<script src="/js/index.js"></script>
+</body>
+</html>
