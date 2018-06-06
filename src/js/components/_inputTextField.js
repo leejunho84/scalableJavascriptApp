@@ -1,9 +1,11 @@
 (function(ns){
 	'use static';
 
-	var $input;
+	var $this, $input, $btn;
 	var setting = {
-		selector:'[data-component-inputtextfield]'
+		selector:'[data-component-inputtextfield]',
+		textField:'input',
+		btn:'.btn'
 	}
 	var InputTextField = function(){
 		var Closure = function(){};
@@ -15,12 +17,21 @@
 		Closure.prototype.init = function(){
 			var _self = this;
 			args = arguments[0];
-			$input = $(setting.selector);
+			$this = $(setting.selector);
+			$input = $(setting.textField);
+			$btn = $(setting.btn);
+
 			$input.on({
 				'focusout':function(){
 					_self.fireEvent('inputFocusOut', this, [$(this).val()]);
 				}
 			});
+
+			$btn.click(function(e){
+				e.preventDefault();
+				_self.fireEvent('submitKeyword', this, [$input.val()]);
+			});
+
 			return this;
 		}
 		Closure.prototype.getValue = function(){

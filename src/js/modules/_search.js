@@ -9,27 +9,21 @@
 				var $btn = $this.find('.btn');
 				var $msg = $this.find('.msg');
 				var textfieldComponent = sandbox.getComponents('component_inputtextfield', {context:$this}, function(i){
-					this.addEvent('inputFocusOut', function(val){
-						console.log(this);
-						console.log(val);
-					});
-				});
-
-				$btn.click(function(e){
-					e.preventDefault();
-					if(textfieldComponent.getValue() !== ''){
+					this.addEvent('submitKeyword', function(val){
+						if(val === ''){
+							alert('검색어를 입력해주세요');
+							return false;
+						}
 						sandbox.promise({
 							url:args.api,
-							type:'GET',
-							data:{'q':textfieldComponent.getValue()}
+							type:'POST',
+							data:{'q':val}
 						}).then(function(data){
 							console.log(data);
-						}).fail(function(msg){
-							console.log(msg);
+						}).fail(function(data){
+							//console.log(data)
 						});
-					}else{
-						alert(args.errMsg);
-					}
+					});
 				});
 			}
 		}

@@ -35,8 +35,8 @@
 			moduleEventInjection:function(strHtml, defer){
 				UI.moduleEventInjection(strHtml, defer);
 			},
-			promise:function(){
-
+			promise:function(opt){
+				return UI.promise(opt);
 			}
 		}
 	}
@@ -287,7 +287,6 @@
 
 	UI.promise = function(opts){
 		if(!opts.url) return false;
-		UI.Loading.show();
 
 		var defer = $.Deferred();
 		var promise = $.ajax({
@@ -295,8 +294,8 @@
 			type:opts.method || 'GET',
 			data:opts.data || {},
 			success:function(data){
-				UI.Loading.hide();
-				if(data.hasOwnProperty('result')){
+				console.log(data);
+				/*if(data.hasOwnProperty('result')){
 					if(data.result){
 						defer.resolve(data);
 					}else{
@@ -305,15 +304,40 @@
 				}else{
 					defer.resolve(data);
 				}
+				*/
 			},
 			error:function(data){
-				UI.Loading.hide();
-				defer.reject(data.statusText);
+				defer.reject(data.responseText);
 			}
 		});
 
 		return defer.promise();
 	}
+
+
+	UI.ajax = function(url, method, data, callback){
+			//$('.dim').addClass('active');
+			if(!isLoadingBar) UI.Loading.show();
+			$.ajax({
+				url:url,
+				type:method||'POST',
+        		dataType:dataType||'json',
+				data:data,
+				complete:function(data){
+					//$('.dim').removeClass('active');
+
+					_.delay(function(data){
+
+						if(!isLoadingBar) UI.Loading.hide();
+						if(data.status == 200 && data.readyState === 4 || isCustom ){
+							callback(data);
+						}else{
+							UIkit.notify('error : ' + data.status, {timeout:3000,pos:'top-center',status:'danger'});
+						}
+					},( delay || 100 ), data);
+				}
+			});
+		},
 
 	UI.arrSameRemove = function(arr){
 		if(arr === null) return [];

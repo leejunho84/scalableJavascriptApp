@@ -104,13 +104,13 @@ Core는 모듈의 생명주기를 관할하고 custom library를 재공해준다
 	}
 })(Core);
 ```
-- ** setting ** 컴포넌트의 재사용성을 위해 내부에서는 setting값을 참조한다.
-- ** Closure ** 상위 모듈 및 컴포넌트에서 참조할수 있도록 prototype 상속한다.
-- ** 컴포넌트이름 ** Core에 컴포넌트를 등록/참조 하기위한 ID 값
-- ** constructor ** 인스턴스될 대상 함수 반환
-- ** reInit ** 상위 관리권한 여부 ( 즉시 실행해야하는 경우가 있기에 추가 )
-- ** attrName ** DOM 엘리먼트에서 컴포넌트를 식별하기 위한 값
-- ** fireEvent ** 컴포넌트는 fireEvent로 상위 모듈 및 컴포넌트에 사용자 정의 이벤트를 던질수 있다.
+**setting** 컴포넌트의 재사용성을 위해 내부에서는 setting값을 참조한다.
+**Closure** 상위 모듈 및 컴포넌트에서 참조할수 있도록 prototype 상속한다.
+**컴포넌트이름** Core에 컴포넌트를 등록/참조 하기위한 ID 값
+**constructor** 인스턴스될 대상 함수 반환
+**reInit** 상위 관리권한 여부 ( 즉시 실행해야하는 경우가 있기에 추가 )
+**attrName** DOM 엘리먼트에서 컴포넌트를 식별하기 위한 값
+**fireEvent** 컴포넌트는 fireEvent로 상위 모듈 및 컴포넌트에 사용자 정의 이벤트를 던질수 있다.
 
 하나의 모듈은 여러개의 컴포넌트를 가질수 있으며 각각의 컴포넌트를 관리한다.
 컴포넌트는 `input, label, button` 처럼 엘리먼트의 가장 작은단위 또는 **container Component** 로 이벤트 및 현재상태를 상위 컴포넌트 및 모듈에 전달하는 역할을 한다.
@@ -126,12 +126,12 @@ Core는 모듈의 생명주기를 관할하고 custom library를 재공해준다
 ##### /dist/index.html
 ```html
 <div class="input-group mb-3" data-module-search="{api://api.poesis.kr/post/search.php, errMsg:주소를 입력해주세요}">
-	<input type="text" class="form-control" placeholder="예) 문래동 강서타워, 선유로 82" data-component-inputTextField="">
+	<input type="text" class="form-control" placeholder="예) 문래동 강서타워, 선유로 82" data-component-inputtextfield="">
 	<div class="input-group-append">
 		<button class="btn btn-outline-secondary" type="button">Button</button>
 	</div>
 </div>
-<div class="list-group" data-module-searchList="">
+<div class="list-group" data-module-searchlist="">
 	<li class="list-group-item disabled">no result...</li>
 </div>
 ```

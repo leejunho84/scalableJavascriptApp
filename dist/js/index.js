@@ -35,8 +35,8 @@
 			moduleEventInjection:function(strHtml, defer){
 				UI.moduleEventInjection(strHtml, defer);
 			},
-			promise:function(){
-
+			promise:function(opt){
+				return UI.promise(opt);
 			}
 		}
 	}
@@ -287,7 +287,6 @@
 
 	UI.promise = function(opts){
 		if(!opts.url) return false;
-		UI.Loading.show();
 
 		var defer = $.Deferred();
 		var promise = $.ajax({
@@ -295,8 +294,8 @@
 			type:opts.method || 'GET',
 			data:opts.data || {},
 			success:function(data){
-				UI.Loading.hide();
-				if(data.hasOwnProperty('result')){
+				console.log(data);
+				/*if(data.hasOwnProperty('result')){
 					if(data.result){
 						defer.resolve(data);
 					}else{
@@ -305,15 +304,40 @@
 				}else{
 					defer.resolve(data);
 				}
+				*/
 			},
 			error:function(data){
-				UI.Loading.hide();
-				defer.reject(data.statusText);
+				defer.reject(data.responseText);
 			}
 		});
 
 		return defer.promise();
 	}
+
+
+	UI.ajax = function(url, method, data, callback){
+			//$('.dim').addClass('active');
+			if(!isLoadingBar) UI.Loading.show();
+			$.ajax({
+				url:url,
+				type:method||'POST',
+        		dataType:dataType||'json',
+				data:data,
+				complete:function(data){
+					//$('.dim').removeClass('active');
+
+					_.delay(function(data){
+
+						if(!isLoadingBar) UI.Loading.hide();
+						if(data.status == 200 && data.readyState === 4 || isCustom ){
+							callback(data);
+						}else{
+							UIkit.notify('error : ' + data.status, {timeout:3000,pos:'top-center',status:'danger'});
+						}
+					},( delay || 100 ), data);
+				}
+			});
+		},
 
 	UI.arrSameRemove = function(arr){
 		if(arr === null) return [];
@@ -334,9 +358,11 @@ $(document).ready(function(){
 (function(ns){
 	'use static';
 
-	var $input;
+	var $this, $input, $btn;
 	var setting = {
-		selector:'[data-component-inputtextfield]'
+		selector:'[data-component-inputtextfield]',
+		textField:'input',
+		btn:'.btn'
 	}
 	var InputTextField = function(){
 		var Closure = function(){};
@@ -348,12 +374,21 @@ $(document).ready(function(){
 		Closure.prototype.init = function(){
 			var _self = this;
 			args = arguments[0];
-			$input = $(setting.selector);
+			$this = $(setting.selector);
+			$input = $(setting.textField);
+			$btn = $(setting.btn);
+
 			$input.on({
 				'focusout':function(){
 					_self.fireEvent('inputFocusOut', this, [$(this).val()]);
 				}
 			});
+
+			$btn.click(function(e){
+				e.preventDefault();
+				_self.fireEvent('submitKeyword', this, [$input.val()]);
+			});
+
 			return this;
 		}
 		Closure.prototype.getValue = function(){
@@ -381,27 +416,21 @@ $(document).ready(function(){
 				var $btn = $this.find('.btn');
 				var $msg = $this.find('.msg');
 				var textfieldComponent = sandbox.getComponents('component_inputtextfield', {context:$this}, function(i){
-					this.addEvent('inputFocusOut', function(val){
-						console.log(this);
-						console.log(val);
-					});
-				});
-
-				$btn.click(function(e){
-					e.preventDefault();
-					if(textfieldComponent.getValue() !== ''){
+					this.addEvent('submitKeyword', function(val){
+						if(val === ''){
+							alert('검색어를 입력해주세요');
+							return false;
+						}
 						sandbox.promise({
 							url:args.api,
-							type:'GET',
-							data:{'q':textfieldComponent.getValue()}
+							type:'POST',
+							data:{'q':val}
 						}).then(function(data){
 							console.log(data);
-						}).fail(function(msg){
-							console.log(msg);
+						}).fail(function(data){
+							//console.log(data)
 						});
-					}else{
-						alert(args.errMsg);
-					}
+					});
 				});
 			}
 		}
