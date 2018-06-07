@@ -8,20 +8,23 @@
 
 				var $btn = $this.find('.btn');
 				var $msg = $this.find('.msg');
+
+				//component_inputtextfield 컴포넌트선언
 				var textfieldComponent = sandbox.getComponents('component_inputtextfield', {context:$this}, function(i){
 					this.addEvent('submitKeyword', function(val){
 						if(val === ''){
 							alert('검색어를 입력해주세요');
 							return false;
 						}
+
 						sandbox.promise({
 							url:args.api,
-							type:'POST',
+							method:'GET',
 							data:{'q':val}
 						}).then(function(data){
-							console.log(data);
+							sandbox.getModule('module_searchlist').rendering(data);
 						}).fail(function(data){
-							//console.log(data)
+							console.log(data)
 						});
 					});
 				});

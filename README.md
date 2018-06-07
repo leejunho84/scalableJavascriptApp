@@ -28,7 +28,7 @@ var sandbox = function(){
         ...
 
 ```
-sandbox는 interface를 재공하여 모듈을 재사용성과 독립성을 보장해 주는 역할을 한다.
+sandbox는 interface를 재공하여 모듈의 재사용성과 독립성을 보장해 주는 역할을 한다.
 
 #### application core
 ```javascript
@@ -42,13 +42,13 @@ Core.register = function(moduleID, creator){
 		instance:null
 	}
 }
-Core.utils = {
-	price:function(price){},
-	ajax:function(url, method, data, callback){},
-	promise:function(){},
-	...
-}
+
+Core.price = function(price){},
+Core.ajax = function(url, method, data, callback){},
+Core.promise = function(){},
+...
 ```
+
 Core는 모듈의 생명주기를 관할하고 custom library를 재공해준다.
 
 #### module
@@ -71,10 +71,10 @@ Core는 모듈의 생명주기를 관할하고 custom library를 재공해준다
 })(Core);
 ```
 모듈은 항상 sandbox를 통해 다른 모듈을 참조하거나
-- ** 모듈이름 ** module을 식별값를 입력 한다.
-- ** attrName ** 모듈의 attribute값을 가져온다 단일 및 배열을 넣을수 있다.
-- ** handler ** Core 내부에서 모듈을 초기화에 쓰이는 this와 메서드 이다.
-- ** initial function ** 모듈 초기화 함수
+- **모듈이름** module을 식별값를 입력 한다.
+- **attrName** 모듈의 attribute값을 가져온다 단일 및 배열을 넣을수 있다.
+- **handler** Core 내부에서 모듈을 초기화에 쓰이는 this와 메서드 이다.
+- **initial function** 모듈 초기화 함수
 
 이와 같이 `sandbox`와 `Core`를 사용하여 `module`을 관리해야 확장가능한 어플리케이션이라 본다. 그리고 모듈은 독립적으로 실행가능한 상태가 되야 하므로 다른 모듈과 컴포넌트에 강한 결합을 지양해야하고 항상 자신의 sandbox에 요청하고 요청받은 내용을 처리해야한다.
 
@@ -104,13 +104,13 @@ Core는 모듈의 생명주기를 관할하고 custom library를 재공해준다
 	}
 })(Core);
 ```
-**setting** 컴포넌트의 재사용성을 위해 내부에서는 setting값을 참조한다.
-**Closure** 상위 모듈 및 컴포넌트에서 참조할수 있도록 prototype 상속한다.
-**컴포넌트이름** Core에 컴포넌트를 등록/참조 하기위한 ID 값
-**constructor** 인스턴스될 대상 함수 반환
-**reInit** 상위 관리권한 여부 ( 즉시 실행해야하는 경우가 있기에 추가 )
-**attrName** DOM 엘리먼트에서 컴포넌트를 식별하기 위한 값
-**fireEvent** 컴포넌트는 fireEvent로 상위 모듈 및 컴포넌트에 사용자 정의 이벤트를 던질수 있다.
+- **setting** 컴포넌트의 재사용성을 위해 내부에서는 setting값을 참조한다.
+- **Closure** 상위 모듈 및 컴포넌트에서 참조할수 있도록 prototype 상속한다.
+- **컴포넌트이름** Core에 컴포넌트를 등록/참조 하기위한 ID 값
+- **constructor** 인스턴스될 대상 함수 반환
+- **reInit** 상위 관리권한 여부 ( 즉시 실행해야하는 경우가 있기에 추가 )
+- **attrName** DOM 엘리먼트에서 컴포넌트를 식별하기 위한 값
+- **fireEvent** 컴포넌트는 fireEvent로 상위 모듈 및 컴포넌트에 사용자 정의 이벤트를 던질수 있다.
 
 하나의 모듈은 여러개의 컴포넌트를 가질수 있으며 각각의 컴포넌트를 관리한다.
 컴포넌트는 `input, label, button` 처럼 엘리먼트의 가장 작은단위 또는 **container Component** 로 이벤트 및 현재상태를 상위 컴포넌트 및 모듈에 전달하는 역할을 한다.
@@ -135,7 +135,7 @@ Core는 모듈의 생명주기를 관할하고 custom library를 재공해준다
 	<li class="list-group-item disabled">no result...</li>
 </div>
 ```
-마크업을 보면 **data-module-searchfield** 모듈에서 **data-component-inputTextField** 컴포넌트를 관리하고 있다.
+마크업을 보면 **data-module-searchfield** 모듈에서 **data-component-inputtextfield** 컴포넌트를 관리하고 있다.
 
 ##### /modules/_search.js
 ```javascript

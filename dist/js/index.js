@@ -35,9 +35,12 @@
 			moduleEventInjection:function(strHtml, defer){
 				UI.moduleEventInjection(strHtml, defer);
 			},
-			promise:function(opt){
-				return UI.promise(opt);
-			}
+			promise:(function(){
+				return UI.promise;
+			})(),
+			ajax:(function(){
+				return UI.ajax;
+			})()
 		}
 	}
 
@@ -50,10 +53,9 @@
 
 	UI.init = function(moduleID){
 		moduleData[moduleID].instance = moduleData[moduleID].creator(new Sandbox(this));
-		moduleData[moduleID].instance.init();
-		/*if(moduleData[moduleID].instance !== undefined && moduleData[moduleID].instance.init !== undefined && typeof moduleData[moduleID].instance.init == 'function'){
-
-		}*/
+		if(moduleData[moduleID].instance !== undefined && moduleData[moduleID].instance.init !== undefined && typeof moduleData[moduleID].instance.init == 'function'){
+			moduleData[moduleID].instance.init();
+		}
 	}
 
 	UI.destroy = function(moduleID){
@@ -287,57 +289,35 @@
 
 	UI.promise = function(opts){
 		if(!opts.url) return false;
-
 		var defer = $.Deferred();
 		var promise = $.ajax({
 			url:opts.url,
-			type:opts.method || 'GET',
-			data:opts.data || {},
-			success:function(data){
-				console.log(data);
-				/*if(data.hasOwnProperty('result')){
-					if(data.result){
-						defer.resolve(data);
-					}else{
-						defer.reject(data.errorMessage);
-					}
-				}else{
-					defer.resolve(data);
-				}
-				*/
-			},
-			error:function(data){
-				defer.reject(data.responseText);
-			}
+			type:opts.method || 'POST',
+			dataType:opts.dataType||'json',
+			data:opts.data || {}
+		}).done(function(data){
+			defer.resolve(data);
+		}).fail(function(jqXHR, textStatus){
+			defer.reject(textStatus);
 		});
 
 		return defer.promise();
 	}
 
 
-	UI.ajax = function(url, method, data, callback){
-			//$('.dim').addClass('active');
-			if(!isLoadingBar) UI.Loading.show();
-			$.ajax({
-				url:url,
-				type:method||'POST',
-        		dataType:dataType||'json',
-				data:data,
-				complete:function(data){
-					//$('.dim').removeClass('active');
-
-					_.delay(function(data){
-
-						if(!isLoadingBar) UI.Loading.hide();
-						if(data.status == 200 && data.readyState === 4 || isCustom ){
-							callback(data);
-						}else{
-							UIkit.notify('error : ' + data.status, {timeout:3000,pos:'top-center',status:'danger'});
-						}
-					},( delay || 100 ), data);
-				}
-			});
-		},
+	UI.ajax = function(url, method, data, callback, dataType){
+		if(!url) throw 'function(url, method, data, callback, dataType)';
+		$.ajax({
+			url:url,
+			type:method || 'POST',
+    		dataType:dataType || 'json',
+			data:data || {}
+		}).done(function(data){
+			callback(data);
+		}).fail(function(jqXHR, textStatus){
+			throw jqXHR;
+		});
+	},
 
 	UI.arrSameRemove = function(arr){
 		if(arr === null) return [];
@@ -415,20 +395,23 @@ $(document).ready(function(){
 
 				var $btn = $this.find('.btn');
 				var $msg = $this.find('.msg');
+
+				//component_inputtextfield 컴포넌트선언
 				var textfieldComponent = sandbox.getComponents('component_inputtextfield', {context:$this}, function(i){
 					this.addEvent('submitKeyword', function(val){
 						if(val === ''){
 							alert('검색어를 입력해주세요');
 							return false;
 						}
+
 						sandbox.promise({
 							url:args.api,
-							type:'POST',
+							method:'GET',
 							data:{'q':val}
 						}).then(function(data){
-							console.log(data);
+							sandbox.getModule('module_searchlist').rendering(data);
 						}).fail(function(data){
-							//console.log(data)
+							console.log(data)
 						});
 					});
 				});
@@ -451,11 +434,28 @@ $(document).ready(function(){
 
 (function(ns){
 	ns.register('module_searchlist', function(sandbox){
-		var $this, args;
+		var $this, args, searchItems = {};
 		var Method = {
 			moduleInit:function(){
 				$this = $(this);
 				args = arguments[0];
+				searchItems = {
+					items:[]
+				}
+
+				var searchListComponent = new Vue({
+					el:args.target,
+					data:searchItems,
+					methods:{
+						itemselect:function(e){
+							console.log(this);
+							console.log(this.$el);
+						}
+					}
+				});
+			},
+			render:function(data){
+				searchItems.items = data.results;
 			}
 		}
 
@@ -467,6 +467,9 @@ $(document).ready(function(){
 					moduleName:'module_searchlist',
 					handler:{context:this, method:Method.moduleInit}
 				});
+			},
+			rendering:function(data){
+				Method.render(data);
 			},
 			distroy:function(){}
 		}
