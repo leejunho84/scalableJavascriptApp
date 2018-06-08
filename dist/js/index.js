@@ -361,6 +361,11 @@ $(document).ready(function(){
 			$input.on({
 				'focusout':function(){
 					_self.fireEvent('inputFocusOut', this, [$(this).val()]);
+				},
+				'keyup':function(e){
+					if(e.keyCode === 13){
+						$btn.trigger('click');
+					}
 				}
 			});
 
@@ -452,6 +457,13 @@ $(document).ready(function(){
 							console.log(this.$el);
 						}
 					}
+				});
+
+				//component_inputtextfield 컴포넌트선언
+				var textfieldComponent = sandbox.getComponents('component_inputtextfield', {}, function(i){
+					this.addEvent('submitKeyword', function(val){
+						console.log('searchList submitKeyword');
+					});
 				});
 			},
 			render:function(data){

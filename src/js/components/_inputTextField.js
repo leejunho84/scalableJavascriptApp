@@ -24,6 +24,11 @@
 			$input.on({
 				'focusout':function(){
 					_self.fireEvent('inputFocusOut', this, [$(this).val()]);
+				},
+				'keyup':function(e){
+					if(e.keyCode === 13){
+						$btn.trigger('click');
+					}
 				}
 			});
 

@@ -19,6 +19,13 @@
 						}
 					}
 				});
+
+				//component_inputtextfield 컴포넌트선언
+				var textfieldComponent = sandbox.getComponents('component_inputtextfield', {}, function(i){
+					this.addEvent('submitKeyword', function(val){
+						console.log('searchList submitKeyword');
+					});
+				});
 			},
 			render:function(data){
 				searchItems.items = data.results;
