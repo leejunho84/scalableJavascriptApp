@@ -2,29 +2,29 @@
 
 ### 1.시작하며
 확장성있는 개발은 코드의 재사용성을 높이는 동시에 운영 cost를 줄이는 일이기도 하다. Nicholas Zakas는 확장성있는 개발을 위해 몇가지 규칙을 제시 하였는데 그가 말하는 내용을 토대로
-구축과 운영에 꼭 필요한 확장성있는 웹어플리케이션 개발방법을 공유하고자한다. 이것은 정답이 아닌 구축과 운영의 결과물이며, 커머스 플랫폼을 개발완료와 지금까지 운영에 대한 회고이다.
+구축과 운영에 꼭 필요한 확장성있는 웹어플리케이션 개발방법을 공유하고자한다. 이것은 정답이 아닌 구축과 운영의 결과물이며, 커머스 플랫폼을 개발완료 부터 운영까지의 회고이다.
 
 참고자료 Nicholas Zakas의 [JavaScript Application Architecture](https://www.slideshare.net/nzakas/scalable-javascript-application-architecture)
 
 ### 2.확장성있게 개발하기
-확장성있게 개발하기 위해서는 아래 3가지의 규칙은 따라야한다고 생각한다.
+확장성있게 개발하기 위해서는 아래 3가지의 규칙은 따라야한다고 한다.
 - 자신의 범위 밖의 DOM element에 접근하지 마라
 - 전역객체를 생성/참조하지 마라
 - 다른 모듈에 직접 접근하지 마라
 
-모듈의 사전적 정의는 어플리케이션의 전체구조 일부의 독립적인 기능단위이다. 서비스마다 필요한 모듈의 조합으로 만들어 질수있는데 모듈이 강하게 결합되어 있다면 각각의 모듈이 서비스로서 수행되기 위해 재사용되는 어려움이 있다. 그래서 모듈간 의존성을 관리해주어야 한다. 즉 무분별한 전역객체 생성으로 오염을 방지하고, 모듈간 느슨한 참조위해 각각 자신의 sandbox(IF)가지며, 모듈의 생명주기를 중앙에서 관리를 해야한다는 말과 같다. 우리는 그것을 줄이기위해 노력해 왔지만 어떠한 규칙(architecture)없이 개발을 하다보면 처음의 의도와는 다르게 다른방향으로 개발이 진행될 가능성이 높다. 따라서 아래의 다이어그램을 보면서 규칙(architecture)을 정하고 그 규칙대로 어플리케이션 개발을 진행하겠다.
+모듈의 사전적 정의는 어플리케이션의 전체구조 일부의 독립적인 기능단위이다. 서비스마다 필요한 모듈의 조합으로 만들어 질수있는데 모듈이 강하게 결합되어 있다면 각각의 모듈이 서비스로서 수행되기 위해 재사용되는 어려움이 있다. 그래서 모듈간 의존성을 관리해주어야 한다. 즉 무분별한 전역객체 생성으로 오염을 방지하고, 모듈간 느슨한 참조위해 각각 자신의 sandbox(IF)가지며, 모듈의 생명주기를 중앙에서 관리를 해야한다는 말과 같다. 우리는 그것을 줄이기위해 노력해 왔지만 어떠한 규칙없이 개발을 하다보면 처음의 의도와는 다르게 다른방향으로 개발이 진행될 가능성이 높다. 따라서 아래의 다이어그램을 보면서 규칙을 정하고 그 규칙대로 어플리케이션 개발을 진행하겠다.
 
 ![Alt text](/architecture.png "sandbox architecture")
 
-다이어그램이 말하는 메시지중 중요한것은 module은 sandbox를 가지고 있다는 점인데 이것을 어떻게 구현을 해야할지는 각자가 해석하는 방향에따라 달라질 수 있을것이다. 필자는 module에 sandbox(IF)를 파라미터로 보내 sandbox를 참조할수있게 규칙을 정했으며 모듈단위 개발을 하되 module의 하위로 component를 추가하였다.
+다이어그램이 말하는 메시지중 중요한것은 module은 sandbox를 가지고 있다는 점인데 이것을 어떻게 구현을 해야할지는 각자가 해석하는 방향에따라 달라질 수 있을것이다. 필자는 module에 sandbox(IF)를 파라미터로 보내 sandbox를 참조할수있게 하였으며 module단위 개발을 하되 module의 하위로 component를 추가하였다.
 
-module은 sandbox(IF)를 가지고 다른 모듈과 base Library를 참조할수 있으며 여러개의 component를 가질수 있으며 component관리한다. 또한 component의 이벤트를 받아 다른 component의 값을 전달하거나 다른 module의 상태를 sandbox(IF)를 통해 변경할수 있다.
+module은 sandbox(IF)를 가지고 base Library를 참조할수 있으며 여러개의 component를 가질수 있다. 또한 component의 이벤트를 받아 다른 component의 값을 전달하거나 다른 module의 상태를 sandbox(IF)를 통해 변경할수 있다.
 
 component는 `input, label, button` 처럼 엘리먼트의 가장 작은단위 또는 **container Component** 로 이벤트 및 현재상태를 상위 component 및 module에 전달하는 역할을 한다.
 
 > **container Component** 컴포넌트의 집합.
 
-이 규칙(architecture)을 가지고 sandbox, application Core, module, component를 정의 해보도록 해보자.
+이 규칙을 가지고 sandbox, application Core, module, component를 정의 해보도록 해보자.
 
 #### sandbox
 ```javascript
@@ -55,7 +55,7 @@ Core.register = function(moduleID, creator){
 
 Core.price = function(price){},
 Core.ajax = function(url, method, data, callback){},
-Core.promise = function(){},
+Core.promise = function(opt){},
 ...
 ```
 
@@ -85,9 +85,6 @@ Core는 모듈의 생명주기를 관할하고 custom library를 재공해준다
 - **attrName** 모듈의 attribute값을 가져온다 단일 및 배열을 넣을수 있다.
 - **handler** 모듈의 초기 설청 {context:'바인드될 this', method:'초기화 함수'}
 - **initial function** 모듈 초기화 함수
-
-이와 같이 `sandbox`와 `Core`를 사용하여 `module`을 관리해야 확장가능한 어플리케이션이라 본다. 그리고 모듈은 독립적으로 실행가능한 상태가 되야 하므로 다른 모듈과 컴포넌트에 강한 결합을 지양해야하고 항상 자신의 sandbox에 요청하고 요청받은 내용을 처리해야한다.
-
 
 #### Component
 ```javaScript
@@ -121,6 +118,9 @@ Core는 모듈의 생명주기를 관할하고 custom library를 재공해준다
 - **reInit** 상위 관리권한 여부 ( 즉시 실행해야하는 경우가 있기에 추가 )
 - **attrName** DOM 엘리먼트에서 컴포넌트를 식별하기 위한 값
 - **fireEvent** 컴포넌트는 fireEvent로 상위 모듈 및 컴포넌트에 사용자 정의 이벤트를 던질수 있다.
+
+운영중에 나타난 상황중 컴포넌트는 작은단위(input, button, label)로 나눌수록 수정이 용이하였고 component 내에 비지니스로직이 있을경우 재사용하는데에 여려움이 있었다.
+따라서 작은단위의 컴포넌트 일수록 상위컴포넌트로 이벤트를 던지는 기능을 가질뿐 그외에 로직추가를 지양해야한다. 그외에 로직을 추가 해야한다면 하위컴포넌트를 가지는 **container component**를 만들어 사용하는것이 좋다.
 
 자 이제 **Application Core, sandbox, module, component**이 어떻게 적용되는지 Search 모듈 개발을 통해서 자세하게 알아보도록 하자.
 
@@ -161,6 +161,7 @@ Core는 모듈의 생명주기를 관할하고 custom library를 재공해준다
 </div>
 ```
 마크업을 보면 **data-module-searchfield** 모듈에서 **data-component-inputtextfield** 컴포넌트를 관리하고 있고, **data-module-searchlist** 모듈은 **data-module-searchfield** 모듈에서 검색된 주소를 받아 리스트를 하려한다.
+- 다이어그램 추가 -
 
 ##### /modules/_search.js
 ```javascript
@@ -375,7 +376,7 @@ hello-world
 │   │            
 │   ├── vendor
 │   │    ├── jquery
-│   │    ├── handlebars
+│   │    ├── vue
 │   │            .
 │
 └── css
@@ -386,7 +387,6 @@ hello-world
 
 
 ## 회고
-
 
 플랫폼을 어떻게 개발 해야할지가 중요했다. 플랫폼은 여러다양한 사람들이
 내가 운영을 했었던 프로젝트들중 프레임워크를 사용한 프로젝트를 제외한 여러 라이브러리를 사용한 프로젝트에서는 코드의 재사용성이라는 것 자체가 불가능했다. 물론 자기가 개발한 코드들에서는 재사용을 하기 위해 짜겠지만
