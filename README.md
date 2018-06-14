@@ -2,7 +2,7 @@
 
 ### 1.시작하며
 확장성있는 개발은 코드의 재사용성을 높이는 동시에 운영 cost를 줄이는 일이기도 하다. Nicholas Zakas는 확장성있는 개발을 위해 몇가지 규칙을 제시 하였는데 그가 말하는 내용을 토대로
-구축과 운영에 꼭 필요한 확장성있는 웹어플리케이션 개발방법을 공유하고자한다. 이것은 정답이 아닌 구축과 운영의 결과물이며, 커머스 플랫폼을 개발완료 부터 운영까지의 회고이다.
+구축과 운영에 꼭 필요한 확장성있는 웹어플리케이션 개발방법을 공유하고자한다. 이것은 정답이 아닌 구축과 운영의 결과물이다.
 
 참고자료 Nicholas Zakas의 [JavaScript Application Architecture](https://www.slideshare.net/nzakas/scalable-javascript-application-architecture)
 
@@ -160,8 +160,9 @@ Core는 모듈의 생명주기를 관할하고 custom library를 재공해준다
 	</div>
 </div>
 ```
-마크업을 보면 **data-module-searchfield** 모듈에서 **data-component-inputtextfield** 컴포넌트를 관리하고 있고, **data-module-searchlist** 모듈은 **data-module-searchfield** 모듈에서 검색된 주소를 받아 리스트를 하려한다.
-- 다이어그램 추가 -
+![Alt text](/module-diagram.png "search module diagram")
+
+**module-search**에서 **component-inputtextfield**를 관리하고 있고, **module-search**에서 **sandbox**를 통해 **module-searchlist** 검색된 주소리스트를 보내고 처리한다.
 
 ##### /modules/_search.js
 ```javascript
@@ -230,8 +231,8 @@ Core는 모듈의 생명주기를 관할하고 custom library를 재공해준다
 	});
 })(Core);
 ```
-search 모듈에서 하는 일은 inputtextfield에서 받은 값을 가지고 주소API를 통해 받은 주소목록을 searchlist 모듈에 보내는 간단한 일을 한다.
-또한 모듈은 정의된 attribute값( {api://api.poesis.kr/post/search.php, errMsg:주소를 입력해주세요} )을 argument로 받아 사용할수 있다.
+module-search에서 하는 일은 inputtextfield에서 받은 값을 가지고 주소API를 통해 받은 주소목록을 module-searchlist에 보내는 간단한 일을 한다.
+또한 module은 정의된 attribute값( {api://api.poesis.kr/post/search.php, errMsg:주소를 입력해주세요} )을 argument로 받아 사용할수 있다.
 
 ##### /modules/_searchList.js
 ```javaScript
@@ -282,7 +283,7 @@ search 모듈에서 하는 일은 inputtextfield에서 받은 값을 가지고 �
 	});
 })(Core);
 ```
-searchlist 모듈은 search 모듈에서 보낸 주소목록을 받아서 자신이 관리하는 컴포넌트 및 DOM Object를 갱신하는 일을 한다.
+module-searchlist은 search 모듈에서 보낸 주소목록을 받아서 자신이 관리하는 component 및 DOM Object를 갱신하는 일을 한다.
 
 ##### /components/_inputTextField.js
 ```javaScript
@@ -354,15 +355,11 @@ searchlist 모듈은 search 모듈에서 보낸 주소목록을 받아서 자신
 	}
 })(Core);
 ```
-컴포넌트의 fireEvent는 모듈 및 상위 컴포넌트와 1:n의 관계를 가질 수 있어 등록한 모두에게 이벤트가 전달된다.
-단, 1:n의 관계는 `자신의 범위 밖의 DOM element에 접근하지 마라` 및 `다른 모듈에 직접 접근하지 마라`의 두가지 규칙에 어긋나는 형태이므로 지양한다. 원칙적으로 해당 컴포넌트를 관리하는 모듈의 sandbox를 통해 받아야한다.
-
-모듈은 core의 관리를 받아 document ready 상태일때 해당 돔의 attribute를 가지고 모듈과, 컴포넌트를 판단하여 실행이 되는 구조이다.
-> `data-module-모듈 이름`, `data-component-컴포넌트 이름`
-
+component의 fireEvent는 module 및 상위 container component와 1:n의 관계를 가질 수 있어 등록한 모두에게 이벤트가 전달된다.
+단, 1:n의 관계는 `자신의 범위 밖의 DOM element에 접근하지 마라` 및 `다른 module에 직접 접근하지 마라`의 두가지 규칙에 어긋나는 형태이므로 지양한다. 원칙적으로 해당 component를 관리하는 module의 sandbox를 통해 받아야한다.
 
 ### 4.디렉터리 구조
-
+```
 hello-world
 ├── js
 │   ├── core.js
@@ -384,11 +381,9 @@ hello-world
     ├── postlist.scss
         .
         .
+```
 
+### 5.정리하며
+module은 sandbox를 통해 하위 component와 다른 module을 참조할수 있으며 component는 상위 module 및 component에 이벤트를 전달하는 역할을 한다. 또한 module은 어플리케이션 전체 일부의 독립적인 기능단위 이기때문에 비지니스로직이 들어가야 되지만 작은단위의 component는 비지니스로직이 들어갈경우 재사용성이 떨어지기때문에 작은단위의 component를 묶어놓은 container component를 만들어 로직추가를 하여 재사용성을 높이는 일이 필요하다. 이러한 모든 일은 운영 cost와 확장성 높은 어플리케이션을 구현하기 위함이다.
 
-## 회고
-
-플랫폼을 어떻게 개발 해야할지가 중요했다. 플랫폼은 여러다양한 사람들이
-내가 운영을 했었던 프로젝트들중 프레임워크를 사용한 프로젝트를 제외한 여러 라이브러리를 사용한 프로젝트에서는 코드의 재사용성이라는 것 자체가 불가능했다. 물론 자기가 개발한 코드들에서는 재사용을 하기 위해 짜겠지만
-컴포넌트는 아주 작은 단위로 쪼개어 질때 가장 재사용이 가능한 상태로
-2017년 겨울 커머스플렛폼을 개발하는 프로젝트에 참여하게 되었다. 무의 상태에서 새롭게 시작할 수 있는 아주 좋은 프로젝트였다.
+앞으로 운영을 하면서 발견되는 불편함 그리고 버그들을 수정하면서 앞으로 발전방향에 대해 고민을 해본다. 그중 어플리케이션이 점점 커지게 되어 모듈이 수천가지가 되었을때 하나의 파일로 묶인 커다란 js파일을 받는것은 너무나 비효율적일 것이다. 따라서 Code Splitting 통해 필요한 모듈만 비동기로 처리되는 방식이 필요하다. 앞으로 이러한 기능들이 추가되고 수정되면서 발전되는 모습을 기대해본다.

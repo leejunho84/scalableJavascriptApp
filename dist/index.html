@@ -7,6 +7,10 @@
 	<style>
 		.container {padding-bottom:60px;}
 		.container .search-container {margin-top:60px;}
+
+		.address-container {margin-top:12px;}
+		.address-container .label{float:left; width:42px; padding: 0 4px; border: 1px solid #ccc; line-height: 19px; font-size: 12px; text-align:center; font-weight: normal; color: #555;}
+		.address-container .address{overflow:hidden; padding-left:30px;}
 	</style>
 </head>
 <body>
@@ -27,12 +31,16 @@
 		<div id="search-list" class="search-list-container" data-module-searchlist="{target:#search-list}">
 			<template v-if="items.length > 0">
 				<a v-for="item in items"
-					v-bind:item="item"
+
 					v-on:click="itemselect"
 					href="#" class="list-group-item list-group-item-action">
-					<span class="zip-code">{{item.postcode5}}({{item.postcode6}})</span>
-					<span class="doro">{{item.ko_doro}} {{item.en_doro}}</span>
-					<span class="jibeon">{{item.ko_jibeon}} {{item.en_jibeon}}</span>
+					<span class="zip-code">{{item.postcode5}} ({{item.postcode6}})</span>
+					<dl class="address-container">
+						<dt class="label">도로명</dt>
+						<dd class="address doro">{{item.ko_doro}}</dd>
+						<dt class="label">지 번</dt>
+						<dd class="address jibeon">{{item.ko_jibeon}}</dd>
+					</dl>
 				</a>
 			</template>
 			<template v-else>
