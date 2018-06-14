@@ -38,7 +38,7 @@ var sandbox = function(){
         ...
 
 ```
-sandbox는 interface를 제공하여 모듈의 재사용성과 독립성을 보장해 주는 역할을 한다.
+sandbox는 interface를 제공하여 module간 의존성을 느슨하게 만들어 독립성을 보장해 주는 역할을 한다.
 
 #### application core
 ```javascript
@@ -80,8 +80,8 @@ Core는 모듈의 생명주기를 관할하고 custom library를 재공해준다
 	});
 })(Core);
 ```
-모듈은 항상 sandbox를 통해 다른 모듈을 참조하거나
-- **모듈이름** module을 식별값를 입력 한다.
+module은 항상 sandbox를 통해 다른 module을 참조하거나 library를 사용할수있다.
+- **module name** module을 식별값를 입력 한다.
 - **attrName** 모듈의 attribute값을 가져온다 단일 및 배열을 넣을수 있다.
 - **handler** 모듈의 초기 설청 {context:'바인드될 this', method:'초기화 함수'}
 - **initial function** 모듈 초기화 함수
@@ -92,7 +92,7 @@ Core는 모듈의 생명주기를 관할하고 custom library를 재공해준다
 	'use static';
 
 	var setting = {
-		selector:'[data-component-컴포넌트이름]'
+		selector:'[data-component-component name]'
 	}
 	var Component = function(){
 		var Closure = function(){};
@@ -104,27 +104,27 @@ Core는 모듈의 생명주기를 관할하고 custom library를 재공해준다
 		return new Closure();
 	}
 
-	ns.Components['component_컴포넌트이름'] = {
+	ns.Components['component_component name'] = {
 		constructor:Component,
 		reInit:false,
 		attrName:'data-component-컴포넌트이름'
 	}
 })(Core);
 ```
-- **setting** 컴포넌트의 재사용성을 위해 내부에서는 setting값을 참조한다.
-- **Closure** 상위 모듈 및 컴포넌트에서 참조할수 있도록 prototype 상속한다.
-- **컴포넌트이름** Core에 컴포넌트를 등록/참조 하기위한 ID 값
+- **setting** component의 재사용성을 위해 내부에서는 setting값을 참조한다.
+- **Closure** 상위 module 및 component에서 참조할수 있도록 prototype 상속한다.
+- **컴포넌트이름** Core에 component를 등록/참조 하기위한 ID 값
 - **constructor** 인스턴스될 대상 함수 반환
 - **reInit** 상위 관리권한 여부 ( 즉시 실행해야하는 경우가 있기에 추가 )
-- **attrName** DOM 엘리먼트에서 컴포넌트를 식별하기 위한 값
-- **fireEvent** 컴포넌트는 fireEvent로 상위 모듈 및 컴포넌트에 사용자 정의 이벤트를 던질수 있다.
+- **attrName** DOM 엘리먼트에서 component를 식별하기 위한 값
+- **fireEvent** component는 fireEvent로 상위 module 및 component에 사용자 정의 이벤트를 던질수 있다.
 
-운영중에 나타난 상황중 컴포넌트는 작은단위(input, button, label)로 나눌수록 수정이 용이하였고 component 내에 비지니스로직이 있을경우 재사용하는데에 여려움이 있었다.
-따라서 작은단위의 컴포넌트 일수록 상위컴포넌트로 이벤트를 던지는 기능을 가질뿐 그외에 로직추가를 지양해야한다. 그외에 로직을 추가 해야한다면 하위컴포넌트를 가지는 **container component**를 만들어 사용하는것이 좋다.
+운영중에 나타난 상황중 component는 작은단위(input, button, label)로 나눌수록 수정이 용이하였고 component 내에 비지니스로직이 있을경우 재사용하는데에 여려움이 있었다.
+따라서 작은단위의 컴포넌트 일수록 상위component로 이벤트를 던지는 기능을 가질뿐 그외에 로직추가를 지양해야한다. 그외에 로직을 추가 해야한다면 하위component를 가지는 **container component**를 만들어 사용하는것이 좋다.
 
-자 이제 **Application Core, sandbox, module, component**이 어떻게 적용되는지 Search 모듈 개발을 통해서 자세하게 알아보도록 하자.
+자 이제 **Application Core, sandbox, module, component**이 어떻게 적용되는지 Search 어플리케이션 개발을 통해서 자세하게 알아보도록 하자.
 
-### 3.Search 모듈개발
+### 3.Search 어플리케이션 개발
 오픈소스 도로명주소 API [postcodify](https://www.poesis.org/postcodify/)를 이용하여 주소검색모듈을 개발을 해보면서 좀더 디테일한 개발 방법을 설명하겠다.
 
 ##### /dist/index.html
@@ -283,7 +283,7 @@ module-search에서 하는 일은 inputtextfield에서 받은 값을 가지고 �
 	});
 })(Core);
 ```
-module-searchlist은 search 모듈에서 보낸 주소목록을 받아서 자신이 관리하는 component 및 DOM Object를 갱신하는 일을 한다.
+module-searchlist은 module-search에서 보낸 주소목록을 받아서 자신이 관리하는 component 및 DOM Object를 갱신하는 일을 한다.
 
 ##### /components/_inputTextField.js
 ```javaScript
@@ -384,6 +384,6 @@ hello-world
 ```
 
 ### 5.정리하며
-module은 sandbox를 통해 하위 component와 다른 module을 참조할수 있으며 component는 상위 module 및 component에 이벤트를 전달하는 역할을 한다. 또한 module은 어플리케이션 전체 일부의 독립적인 기능단위 이기때문에 비지니스로직이 들어가야 되지만 작은단위의 component는 비지니스로직이 들어갈경우 재사용성이 떨어지기때문에 작은단위의 component를 묶어놓은 container component를 만들어 로직추가를 하여 재사용성을 높이는 일이 필요하다. 이러한 모든 일은 운영 cost와 확장성 높은 어플리케이션을 구현하기 위함이다.
+module은 sandbox를 통해 하위 component와 다른 module을 참조할수 있으며 component는 상위 module 및 component에 이벤트를 전달하는 역할을 한다. 또한 비지니스로직이 들어가야 되지만 component는 이벤트를 던지는 기능외에 로직이 들어갈경우 재사용성이 떨어지기때문에 하위component를 가지는 **container component**를 만들어 재사용성을 높이는 일이 필요하다.
 
-앞으로 운영을 하면서 발견되는 불편함 그리고 버그들을 수정하면서 앞으로 발전방향에 대해 고민을 해본다. 그중 어플리케이션이 점점 커지게 되어 모듈이 수천가지가 되었을때 하나의 파일로 묶인 커다란 js파일을 받는것은 너무나 비효율적일 것이다. 따라서 Code Splitting 통해 필요한 모듈만 비동기로 처리되는 방식이 필요하다. 앞으로 이러한 기능들이 추가되고 수정되면서 발전되는 모습을 기대해본다.
+앞으로 운영을 하면서 발견되는 불편함 그리고 버그들을 수정하면서 앞으로 발전방향에 대해 고민을 해본다. 그중 어플리케이션이 점점 커지게 되어 모듈이 수천가지가 되었을때 하나의 파일로 묶인 커다란 js파일을 받는것은 너무나 비효율적일 것이다. 따라서 Code Splitting 통해 필요한 모듈만 비동기로 처리되는 방식이 필요하다. 앞으로 이러한 기능들이 추가되고 수정되면서 지금보다 더 발전되는 모습을 기대해본다.
