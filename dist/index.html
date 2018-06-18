@@ -8,6 +8,7 @@
 		.container {padding-bottom:60px;}
 		.container .search-container {margin-top:60px;}
 
+		.postcode6 {display: inline-block; margin-left: 5px;font-size:14px;}
 		.address-container {margin-top:12px;}
 		.address-container .label{float:left; width:42px; padding: 0 4px; border: 1px solid #ccc; line-height: 19px; font-size: 12px; text-align:center; font-weight: normal; color: #555;}
 		.address-container .address{overflow:hidden; padding-left:30px;}
@@ -31,10 +32,9 @@
 		<div id="search-list" class="search-list-container" data-module-searchlist="{target:#search-list}">
 			<template v-if="items.length > 0">
 				<a v-for="item in items"
-
 					v-on:click="itemselect"
 					href="#" class="list-group-item list-group-item-action">
-					<span class="zip-code">{{item.postcode5}} ({{item.postcode6}})</span>
+					<span class="postcode5">{{item.postcode5}}</span><span class="postcode6">({{ item.postcode6.replace(/([0-9]{3})/, '$1-') }})</span>
 					<dl class="address-container">
 						<dt class="label">도로명</dt>
 						<dd class="address doro">{{item.ko_doro}}</dd>

@@ -384,6 +384,6 @@ hello-world
 ```
 
 ### 5.정리하며
-module은 sandbox를 통해 하위 component와 다른 module을 참조할수 있으며 component는 상위 module 및 component에 이벤트를 전달하는 역할을 한다. 또한 비지니스로직이 들어가야 되지만 component는 이벤트를 던지는 기능외에 로직이 들어갈경우 재사용성이 떨어지기때문에 하위component를 가지는 **container component**를 만들어 재사용성을 높이는 일이 필요하다.
+module은 sandbox를 통해 하위 component와 다른 module을 참조할수 있으며 component는 상위 module 및 component에 이벤트를 전달하는 역할을 한다. 또한 module은 전체 어플리케이션 일부의 독립적인 기능단위 이기때문에 비지니스로직이 들어가야 된다. 하지만 component는 이벤트를 던지는 기능외에 로직이 들어갈경우 재사용성이 떨어지기때문에 하위component를 가지는 **container component**를 만들어 재사용성을 높이는 일이 필요하다.
 
 앞으로 운영을 하면서 발견되는 불편함 그리고 버그들을 수정하면서 앞으로 발전방향에 대해 고민을 해본다. 그중 어플리케이션이 점점 커지게 되어 모듈이 수천가지가 되었을때 하나의 파일로 묶인 커다란 js파일을 받는것은 너무나 비효율적일 것이다. 따라서 Code Splitting 통해 필요한 모듈만 비동기로 처리되는 방식이 필요하다. 앞으로 이러한 기능들이 추가되고 수정되면서 지금보다 더 발전되는 모습을 기대해본다.
