@@ -356,7 +356,7 @@ module-searchlist은 module-search에서 보낸 주소목록을 받아서 자신
 })(Core);
 ```
 component의 fireEvent는 module 및 상위 container component와 1:n의 관계를 가질 수 있어 등록한 모두에게 이벤트가 전달된다.
-단, 1:n의 관계는 `자신의 범위 밖의 DOM element에 접근하지 마라` 및 `다른 module에 직접 접근하지 마라`의 두가지 규칙에 어긋나는 형태이므로 지양한다. 원칙적으로 해당 component를 관리하는 module의 sandbox를 통해 받아야한다.
+단, 1:n의 관계는 `자신의 범위 밖의 DOM element에 접근하지 마라` 및 `다른 module에 직접 접근하지 마라`의 두가지 규칙에 어긋나는 형태이므로 지양한다. 원칙적으로 해당 component를 관리하는 module의 sandbox를 통해 받아야한다. 이렇게 1:n의 관계를 가지는 구조로 하게된 경우는 component가 2개 이상의 모듈에 종속이 될떄 이벤트를 유연하게 전달받기위함이다.
 
 ### 4.디렉터리 구조
 ```
